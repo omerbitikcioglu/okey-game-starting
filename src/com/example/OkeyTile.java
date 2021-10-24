@@ -1,7 +1,5 @@
 package com.example;
 
-import java.util.HashMap;
-
 /**
  * Class of the Okey tiles.
  *
@@ -35,6 +33,7 @@ public class OkeyTile {
 
     /**
      * Constructor for classic tiles
+     *
      * @param representedNum The number represents the tile
      */
     public OkeyTile(int representedNum) {
@@ -45,8 +44,9 @@ public class OkeyTile {
 
     /**
      * Constructor for fake joker tile
+     *
      * @param actualNum The actual number of the joker
-     * @param color The color of the joker
+     * @param color     The color of the joker
      */
     public OkeyTile(int actualNum, TileColor color) {
         this.representedNum = 52;
@@ -59,10 +59,14 @@ public class OkeyTile {
 
         int colorNum = representedNum / 13;
         switch (colorNum) {
-            case 0: return TileColor.YELLOW;
-            case 1: return TileColor.BLUE;
-            case 2: return TileColor.BLACK;
-            case 3: return TileColor.RED;
+            case 0:
+                return TileColor.YELLOW;
+            case 1:
+                return TileColor.BLUE;
+            case 2:
+                return TileColor.BLACK;
+            case 3:
+                return TileColor.RED;
             default:
                 throw new IllegalStateException("Unexpected value: " + colorNum);
         }
@@ -74,6 +78,7 @@ public class OkeyTile {
 
     /**
      * Getter for representedNum.
+     *
      * @return the number represents the tile.
      */
     public int getRepresentedNum() {
@@ -82,6 +87,7 @@ public class OkeyTile {
 
     /**
      * Getter for actualNum.
+     *
      * @return the actual number of the tile.
      */
     public int getActualNum() {
@@ -94,6 +100,7 @@ public class OkeyTile {
 
     /**
      * Compares tiles to know whether they are equal
+     *
      * @param obj The tile object to be compared
      * @return true if two tiles are equivalent by means of actualNum and color
      */
@@ -105,7 +112,22 @@ public class OkeyTile {
         } else return false;
     }
 
+    @Override
+    public String toString() {
+        if (this.isJoker()) {
+            return "J-" + color + " " + actualNum;
+        }
+        if (representedNum == 52) {
+            return "FJ-" + color + " " + actualNum;
+        } else
+            return color + " " + actualNum;
+    }
+
     public void setJoker() {
         isJoker = true;
+    }
+
+    public boolean isJoker() {
+        return isJoker;
     }
 }
