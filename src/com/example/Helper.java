@@ -12,6 +12,7 @@ public class Helper {
 
     /**
      * Shuffles the given array of tiles
+     *
      * @param tiles The array of okey tiles.
      */
     public static void shuffleTiles(ArrayList<OkeyTile> tiles) {
@@ -25,5 +26,6 @@ public class Helper {
             tiles.set(randIndex, tempTile);
         }
     }
+
 
 }

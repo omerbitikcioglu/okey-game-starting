@@ -21,7 +21,7 @@ public class Main {
         for (int i = 0; i < 106; ++i) {
             int representedNum = i % 53;
             tiles.add(new OkeyTile(representedNum));
-            System.out.print(representedNum + " ");
+            System.out.print(representedNum + ", ");
         }
         System.out.println();
 
@@ -30,7 +30,7 @@ public class Main {
         Helper.shuffleTiles(tiles);
         for (OkeyTile tile : tiles
         ) {
-            System.out.print(tile.getRepresentedNum() + " ");
+            System.out.print(tile.getRepresentedNum() + ", ");
         }
         System.out.println();
 
@@ -43,7 +43,7 @@ public class Main {
             indicatorIndex = rand.nextInt(106);
             indicatorTile = tiles.remove(indicatorIndex);
         }
-        System.out.println("Indicator tile:\n" + indicatorTile.getColor() + " " + indicatorTile.getActualNum());
+        System.out.println("Indicator tile:\n" + indicatorTile);
 
         // Select joker tile
         int jokerActualNum = indicatorTile.getActualNum() + 1;
@@ -61,19 +61,7 @@ public class Main {
                 tiles.get(i).setJoker();
             }
         }
-
-        // Print actual tiles
-        System.out.println("Actual tiles:");
-        for (OkeyTile tile : tiles
-        ) {
-            if (tile.isJoker()) {
-                System.out.print("J-");
-            } else if (tile.getRepresentedNum() == 52) {
-                System.out.print("FJ-");
-            }
-            System.out.print(tile.getColor() + " " + tile.getActualNum() + ", ");
-        }
-        System.out.println();
+        System.out.println("Actual tiles:\n" + tiles);
 
         // Deal the tiles
         for (int i = 0; i < 14; ++i) {
@@ -99,14 +87,95 @@ public class Main {
         }
 
         // Print hands
-        System.out.print("Hands:\nPlayer1: ");
-        for (OkeyTile tile : player1_tiles) System.out.print(tile + ", ");
-        System.out.print("\nPlayer2: ");
-        for (OkeyTile tile : player2_tiles) System.out.print(tile + ", ");
-        System.out.print("\nPlayer3: ");
-        for (OkeyTile tile : player3_tiles) System.out.print(tile + ", ");
-        System.out.print("\nPlayer4: ");
-        for (OkeyTile tile : player4_tiles) System.out.print(tile + ", ");
+        System.out.println("Hands:\nPlayer1: " + player1_tiles);
+        System.out.println("Player2: " + player2_tiles);
+        System.out.println("Player3: " + player3_tiles);
+        System.out.println("Player4: " + player4_tiles);
 
+        // Find the best hand
+        int bestHand = findBestHand(player1_tiles, player2_tiles, player3_tiles, player4_tiles);
+        System.out.println("\nPlayer " + bestHand + " has the best hand!");
+
+    }
+
+    private static int findBestHand(ArrayList<OkeyTile> player1_tiles, ArrayList<OkeyTile> player2_tiles, ArrayList<OkeyTile> player3_tiles, ArrayList<OkeyTile> player4_tiles) {
+
+        // Sort the tiles by their actual numbers
+        TileComparator comparator = new TileComparator();
+        player1_tiles.sort(comparator);
+        player2_tiles.sort(comparator);
+        player3_tiles.sort(comparator);
+        player4_tiles.sort(comparator);
+
+        // Print sorted hands
+        System.out.println("Sorted hands:");
+        System.out.println(player1_tiles);
+        System.out.println(player2_tiles);
+        System.out.println(player3_tiles);
+        System.out.println(player4_tiles);
+
+        int player1_point = findPlayerPoint(player1_tiles);
+        int player2_point = findPlayerPoint(player2_tiles);
+        int player3_point = findPlayerPoint(player3_tiles);
+        int player4_point = findPlayerPoint(player4_tiles);
+
+        int maxPoint = player1_point;
+        if (maxPoint < player2_point) maxPoint = player2_point;
+        else if (maxPoint < player3_point) maxPoint = player3_point;
+        else if (maxPoint < player4_point) maxPoint = player4_point;
+
+        if (maxPoint == player1_point) return 1;
+        if (maxPoint == player2_point) return 2;
+        if (maxPoint == player3_point) return 3;
+        return 4;
+    }
+
+    private static int findPlayerPoint(ArrayList<OkeyTile> playerHand) {
+        int playerPoint = 0;
+        for (int i = 0; i < playerHand.size() - 1; ++i) {
+            // Player has the same tiles
+            if (playerHand.get(i).equals(playerHand.get(i + 1)) &&
+                    !playerHand.get(i).isJoker() &&
+                    !playerHand.get(i + 1).isJoker()
+            ) {
+                playerPoint += 2;
+            }
+
+            // Find groups of sequential tiles
+            boolean flag = true;
+            int sequentialTiles = 0;
+            int j;
+            for (j = i; j < playerHand.size() - 1 && flag; ++j) {
+                OkeyTile tile = playerHand.get(j);
+                OkeyTile nextTile = playerHand.get(j + 1);
+                if (!((tile.getColor() == nextTile.getColor() &&
+                        tile.getActualNum() + 1 == nextTile.getActualNum()) ||
+                        tile.isJoker() ||
+                        nextTile.isJoker())) {
+                    flag = false;
+                }
+            }
+            sequentialTiles = j - i;
+            if (sequentialTiles >= 2) playerPoint += Math.pow(sequentialTiles, 2);
+
+            // Find color collections of the same number
+            flag = true;
+            int colorGroup = 0;
+            for (j = i; j < playerHand.size() - 1 && flag; ++j) {
+                OkeyTile tile = playerHand.get(j);
+                OkeyTile nextTile = playerHand.get(j + 1);
+                if (!((tile.getColor() != nextTile.getColor() && tile.getActualNum() == nextTile.getActualNum()) ||
+                        tile.isJoker() ||
+                        nextTile.isJoker())) {
+                    flag = false;
+                }
+            }
+            colorGroup = j - i;
+            if (colorGroup >= 2) playerPoint += Math.pow(colorGroup, 2);
+
+            if (playerHand.get(i).isJoker()) playerPoint += 5;
+
+        }
+        return playerPoint;
     }
 }
