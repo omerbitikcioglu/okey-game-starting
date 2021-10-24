@@ -29,10 +29,25 @@ public class OkeyTile {
      */
     private final TileColor color;
 
+    /**
+     * Constructor for classic tiles
+     * @param representedNum The number represents the tile
+     */
     public OkeyTile(int representedNum) {
         this.representedNum = representedNum;
         this.actualNum = calculateActualNum(representedNum);
         this.color = calculateColor(representedNum);
+    }
+
+    /**
+     * Constructor for fake joker tile
+     * @param actualNum The actual number of the joker
+     * @param color The color of the joker
+     */
+    public OkeyTile(int actualNum, TileColor color) {
+        this.representedNum = 52;
+        this.actualNum = actualNum;
+        this.color = color;
     }
 
     private TileColor calculateColor(int representedNum) {
