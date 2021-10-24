@@ -50,12 +50,16 @@ public class Main {
         if (jokerActualNum == 14) jokerActualNum = 1;
         TileColor jokerColor = indicatorTile.getColor();
         System.out.println("Joker tile:\n" + jokerColor + " " + jokerActualNum);
+        OkeyTile fakeJokey = new OkeyTile(jokerActualNum, jokerColor);
 
         // Change colors and actual values of the fake jokers
-        for (int i = 0, count=0; i < tiles.size() && count!=2; ++i) {
+        // Also indicate joker tiles as changing their isJoker attribute
+        for (int i = 0; i < tiles.size(); ++i) {
             if (tiles.get(i).getRepresentedNum() == 52) {
-                count++;
-                tiles.set(i, new OkeyTile(jokerActualNum, jokerColor));
+                tiles.set(i, fakeJokey);
+            }
+            else if (tiles.get(i).equals(fakeJokey)) {
+                tiles.get(i).setJoker();
             }
         }
 

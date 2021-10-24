@@ -1,5 +1,7 @@
 package com.example;
 
+import java.util.HashMap;
+
 /**
  * Class of the Okey tiles.
  *
@@ -28,6 +30,8 @@ public class OkeyTile {
      * if it is the case.
      */
     private final TileColor color;
+
+    private boolean isJoker = false;
 
     /**
      * Constructor for classic tiles
@@ -86,5 +90,22 @@ public class OkeyTile {
 
     public TileColor getColor() {
         return color;
+    }
+
+    /**
+     * Compares tiles to know whether they are equal
+     * @param obj The tile object to be compared
+     * @return true if two tiles are equivalent by means of actualNum and color
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof OkeyTile) {
+            return ((OkeyTile) obj).actualNum == this.actualNum &&
+                    ((OkeyTile) obj).getColor() == this.color;
+        } else return false;
+    }
+
+    public void setJoker() {
+        isJoker = true;
     }
 }
