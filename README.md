@@ -1,4 +1,4 @@
-# DigitoyAssignment
+# Okey Game Starting
 
 This program simulates the beginning of an Okey game (similar to Rummikub).
 It tries to determine who has the best hand and closest to a win.
